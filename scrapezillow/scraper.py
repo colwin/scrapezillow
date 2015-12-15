@@ -17,7 +17,7 @@ def _check_for_null_result(result):
         raise Exception(
             "We were unable to parse crucial facts for this home. Perhaps this is "
             "not a valid listing or the html changed and we are unable to use the "
-            "scraper. If the latter, file a bug at https://github.com/hahnicity/scrapezillow/issues"
+            "scraper. If the latter, file a bug at https://github.com/colwin/scrapezillow/issues"
         )
 
 
@@ -40,8 +40,10 @@ def _get_sale_info(soup):
     zestimates_titles = soup.findAll("div",{"class":"zest-title"})
     for i,zest in enumerate(zestimates_titles): # loop through titles to make sure we have the right div for RENT zestimate
         value = zest.findAll(text=True)
-        if 'rent' in str(value):
+        if 'rent' in str(value) and re.findall(r"\$?([\d,]+)", zestimates_values[i](text=True)[0]):
             sale_info["rent_zestimate"] = re.findall(r"\$?([\d,]+)", zestimates_values[i](text=True)[0])[0]
+        else:
+            sale_info["rent_zestimate"] = "Unavailable"
     return sale_info
 
 
